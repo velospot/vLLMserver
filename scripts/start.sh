@@ -14,6 +14,21 @@ echo "=========================================="
 echo "vLLM Inference Server Startup"
 echo "=========================================="
 
+# Check Python version
+PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")' 2>/dev/null)
+if [ -z "$PYTHON_VERSION" ]; then
+    echo "❌ python3 not found"
+    exit 1
+fi
+
+MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
+MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+
+if [ "$MAJOR" -lt 3 ] || ([ "$MAJOR" -eq 3 ] && [ "$MINOR" -lt 13 ]); then
+    echo "❌ Python 3.13+ required, found: $PYTHON_VERSION"
+    exit 1
+fi
+
 # Check if virtual environment exists
 if [ ! -d ".venv" ]; then
     echo "❌ Virtual environment not found"

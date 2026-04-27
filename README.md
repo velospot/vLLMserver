@@ -17,18 +17,36 @@ Production-ready FastAPI server for LLM inference using vLLM with OpenAI-compati
 
 ## Installation
 
-**Requirements:** Python ≥3.10, CUDA 12.1+ (or ROCm on AMD)
+**Requirements:** Python ≥3.13, CUDA 12.1+ (optional, for GPU support)
+
+### macOS (Development)
 
 ```bash
+# Verify Python 3.13+
+python3 --version
+
 # Clone or navigate to project
 cd vllmserver
 
-# Install dependencies (using uv)
+# Install dependencies using uv
 uv sync
-
-# Or with pip
-pip install -e .
 ```
+
+### Ubuntu (Production with GPU)
+
+```bash
+# Verify Python 3.13+
+python3 --version
+
+# Install system dependencies
+sudo apt-get update
+sudo apt-get install -y python3.13 python3.13-venv
+
+# Install project dependencies with GPU support
+uv sync --extra gpu
+```
+
+See [PYTHON313_COMPATIBILITY.md](PYTHON313_COMPATIBILITY.md) for detailed compatibility information.
 
 ## Quick Start
 
@@ -457,7 +475,7 @@ for data in embeddings.data:
 # Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Python 3.10+
+# Install Python 3.13+
 sudo apt install python3.10 python3.10-venv python3-pip -y
 
 # Install CUDA (if not present)

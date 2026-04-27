@@ -101,7 +101,7 @@ python -m pytest tests/test_platform_detection.py -v
 OS: Ubuntu 20.04+ or similar Linux
 GPU: NVIDIA GPU (RTX 3090, A100, etc.)
 CUDA: 12.1+ installed
-Python: 3.10-3.12
+Python: 3.13+
 ```
 
 ### 2. Install Dependencies with GPU Support
@@ -259,7 +259,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.13'
       - run: pip install uv && uv sync
       - run: python -m pytest tests/ -v
       # Uses mock vLLM automatically
@@ -270,7 +270,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.13'
       - run: pip install uv && uv sync --extra gpu
       - run: python -m pytest tests/ -v
       # Uses real vLLM with CUDA
@@ -281,7 +281,7 @@ jobs:
 ### Development Image (small, fast, no GPU)
 
 ```dockerfile
-FROM python:3.11-slim
+FROM python:3.13-slim
 WORKDIR /app
 COPY . .
 RUN pip install uv && uv sync
@@ -293,7 +293,7 @@ CMD ["python", "main.py"]
 
 ```dockerfile
 FROM nvidia/cuda:12.1-cudnn8-runtime-ubuntu22.04
-RUN apt-get update && apt-get install -y python3.11 python3-pip
+RUN apt-get update && apt-get install -y python3.13 python3-pip
 WORKDIR /app
 COPY . .
 RUN pip install uv && uv sync --extra gpu

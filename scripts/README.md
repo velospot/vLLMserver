@@ -17,11 +17,37 @@ Helper scripts for development, testing, and deployment.
 
 ## Available Scripts
 
+### `verify.sh` — Verify Setup
+
+Verify Python 3.13 setup and check dependencies.
+
+```bash
+# Check Python version and dependencies
+./scripts/verify.sh
+```
+
+**Checks:**
+- Python version (must be ≥3.13)
+- Virtual environment exists
+- Core dependencies installed
+- Development dependencies installed
+- Configuration files valid
+- Platform detection working
+
+Use this to troubleshoot setup issues.
+
+---
+
 ### `setup.sh` — Initial Setup
 
 Initialize development environment and create environment files.
 
+**Requirements:** Python ≥3.13
+
 ```bash
+# Verify Python version
+python3 --version  # Must show 3.13.x or higher
+
 # Development mode (macOS compatible, no GPU)
 ./scripts/setup.sh
 
@@ -30,6 +56,7 @@ Initialize development environment and create environment files.
 ```
 
 **Does:**
+- Verifies Python ≥3.13 is available
 - Installs dependencies via `uv sync` (optionally with GPU support)
 - Creates `.env.dev` from `.env.example`
 - Creates `.env.prod` from `.env.example`
@@ -250,7 +277,7 @@ git commit -m "..."
 
 **Settings:**
 - Line length: 100 characters
-- Target: Python 3.10+
+- Target: Python 3.13+
 - Single quotes where possible (standard)
 
 **Config:** `pyproject.toml` → `[tool.black]`
@@ -359,6 +386,7 @@ chmod +x scripts/*.sh
 
 | Task | Command |
 |------|---------|
+| Verify setup | `./scripts/verify.sh` |
 | First-time setup | `./scripts/setup.sh` |
 | Customize dev config | `nano .env.dev` |
 | Customize prod config | `nano .env.prod` |

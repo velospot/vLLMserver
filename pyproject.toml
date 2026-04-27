@@ -7,7 +7,7 @@ name = "vllmserver"
 version = "1.0.0"
 description = "Production vLLM inference server with OpenAI-compatible API"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.0",
@@ -44,7 +44,7 @@ include-group = ["dev"]
 # ──────────────────────────────────────────────────────────────────────────────
 [tool.ruff]
 line-length = 100
-target-version = "py310"
+target-version = "py313"
 exclude = [
     ".git",
     "__pycache__",
@@ -88,7 +88,7 @@ force-single-line = false
 # ──────────────────────────────────────────────────────────────────────────────
 [tool.black]
 line-length = 100
-target-version = ["py310"]
+target-version = ["py313"]
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -108,7 +108,7 @@ exclude = '''
 # MyPy Type Checking Configuration
 # ──────────────────────────────────────────────────────────────────────────────
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.13"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
