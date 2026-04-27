@@ -1,0 +1,135 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pyc
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+.tox/
+.nox/
+.nose*
+*.cover
+*.py,cover
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Linting
+.ruff_cache/
+.flake8
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Cache
+.cache/
+.cache
+*.cache
+
+# OS
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# vLLM specific
+*.pt
+*.safetensors
+model_cache/
+huggingface_cache/
+.huggingface/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Node (if used for frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Docker (if using)
+.dockerignore
+docker-compose.override.yml
+
+# Local configuration overrides
+settings.local.json
+config.local.yaml
+
+# Generated files
+*.generated.py
+__generated__/
+
+# Jupyter notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# HuggingFace cache
+.cache/
+huggingface_cache/
+
+# Large model files (don't commit)
+*.bin
+*.onnx
+*.pb
+models/
+checkpoints/
+weights/
