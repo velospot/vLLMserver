@@ -2,6 +2,33 @@
 
 ## Latest Fixes
 
+### 3. CUDA Multiprocessing in Production (2026-04-28)
+
+**Issue:**
+```
+RuntimeError: Cannot re-initialize CUDA in forked subprocess. 
+To use CUDA with multiprocessing, you must use the 'spawn' start method
+```
+
+**Root Cause:**
+vLLM initializes CUDA in the parent process. When uvicorn forks worker processes, they inherit CUDA state but cannot reinitialize it, causing a crash.
+
+**Fix Applied:**
+1. Set multiprocessing start method to 'spawn' in `main.py` (prevents forking)
+2. Ensured single worker configuration with `workers=1`
+3. Added enhanced error messages in `app/main.py` lifespan
+4. Added CUDA device logging for debugging
+
+**Files Modified:**
+- `main.py` — Added multiprocessing.set_start_method('spawn') and environment checks
+- `app/main.py` — Enhanced error messages with CUDA diagnostics
+
+**Status:** ✅ Fixed with comprehensive production guide
+
+---
+
+## Latest Fixes
+
 ### 1. AsyncEngineArgs Parameter Deprecation (2026-04-28)
 
 **Issue:**

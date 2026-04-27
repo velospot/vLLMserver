@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import time
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
@@ -34,6 +35,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     if USE_MOCK_VLLM:
         logger.warning("⚠️  Using mock vLLM - suitable for testing/development only")
         logger.warning("    For production GPU inference, install vLLM on Linux with CUDA")
+    else:
+        logger.info("CUDA device: %s", os.environ.get("CUDA_VISIBLE_DEVICES", "all"))
     logger.info("=" * 70)
 
     # ── Load chat model ────────────────────────────────────────────────────────
@@ -53,6 +56,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         logger.info("Chat model ready: %s", settings.chat_model)
     except Exception as e:
         logger.error("Failed to load chat model: %s", e)
+        logger.error("This often occurs due to CUDA multiprocessing issues on Linux/GPU")
+        logger.error("Solutions:")
+        logger.error("  1. Ensure 'workers=1' in uvicorn configuration (already set)")
+        logger.error("  2. Run with 'spawn' multiprocessing method (already configured)")
+        logger.error("  3. Verify CUDA/vLLM installation: python -c 'from vllm import LLM'")
+        logger.error("  4. Check CUDA_VISIBLE_DEVICES and GPU availability")
         app.state.llm_service = None
         raise
 

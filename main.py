@@ -1,11 +1,13 @@
 """Entry point for vLLM Inference Server."""
 
 import logging
+import multiprocessing
 import sys
 
 import uvicorn
 
 from app.config import settings
+from app.platform_detect import USE_MOCK_VLLM
 
 logging.basicConfig(
     level=logging.INFO,
@@ -21,6 +23,15 @@ def main() -> int:
         Exit code (0 for success, 1 for failure)
     """
     try:
+        # Set multiprocessing start method for CUDA safety
+        # 'spawn' prevents CUDA reinitialization in forked subprocesses
+        if not USE_MOCK_VLLM:
+            try:
+                multiprocessing.set_start_method('spawn', force=True)
+            except RuntimeError:
+                # Already set, which is fine
+                pass
+
         logger.info("Starting vLLM Inference Server")
         logger.info("Host: %s, Port: %d", settings.host, settings.port)
         logger.info("Chat Model: %s", settings.chat_model)
