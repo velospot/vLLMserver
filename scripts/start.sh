@@ -82,7 +82,16 @@ case "$MODE" in
         source .env.dev
         set +a
         export PORT=8001
-        timeout 10 .venv/bin/python main.py || true
+        # Use timeout with fallback for macOS compatibility
+        if command -v timeout &> /dev/null; then
+            timeout 10 .venv/bin/python main.py || true
+        else
+            # macOS doesn't have timeout, use gtimeout from coreutils or just run with sleep
+            .venv/bin/python main.py &
+            PID=$!
+            sleep 10
+            kill $PID 2>/dev/null || true
+        fi
         ;;
 
     *)

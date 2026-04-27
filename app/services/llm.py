@@ -31,7 +31,7 @@ class LLMService:
             quantization=quantization,
             dtype=dtype,
             trust_remote_code=True,
-            disable_log_requests=True,
+            enable_log_requests=False,
         )
         # Note: from_engine_args is async in real vLLM, but we call it synchronously
         # The real vLLM version will need async initialization at server start

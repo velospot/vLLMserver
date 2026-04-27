@@ -25,7 +25,7 @@ class EmbeddingService:
             tensor_parallel_size=tensor_parallel_size,
             task="embed",
             trust_remote_code=True,
-            disable_log_requests=True,
+            enable_log_requests=False,
         )
         self.engine = AsyncLLMEngine.from_engine_args(engine_args)
         self.model_name = model

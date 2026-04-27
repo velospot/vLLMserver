@@ -97,7 +97,7 @@ class AsyncEngineArgs:
         dtype: str = "auto",
         task: str = "generate",
         trust_remote_code: bool = False,
-        disable_log_requests: bool = False,
+        enable_log_requests: bool = True,
         **kwargs,
     ) -> None:
         self.model = model
@@ -109,7 +109,7 @@ class AsyncEngineArgs:
         self.dtype = dtype
         self.task = task
         self.trust_remote_code = trust_remote_code
-        self.disable_log_requests = disable_log_requests
+        self.enable_log_requests = enable_log_requests
 
 
 class AsyncLLMEngine:
