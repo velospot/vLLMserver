@@ -2,7 +2,16 @@
 
 import logging
 import multiprocessing
+import os
 import sys
+
+# CRITICAL: Set spawn method BEFORE any CUDA/vLLM imports
+# This must happen at module load time, not in main()
+try:
+    multiprocessing.set_start_method('spawn', force=True)
+except RuntimeError:
+    # Already set, which is fine
+    pass
 
 import uvicorn
 
@@ -23,15 +32,6 @@ def main() -> int:
         Exit code (0 for success, 1 for failure)
     """
     try:
-        # Set multiprocessing start method for CUDA safety
-        # 'spawn' prevents CUDA reinitialization in forked subprocesses
-        if not USE_MOCK_VLLM:
-            try:
-                multiprocessing.set_start_method('spawn', force=True)
-            except RuntimeError:
-                # Already set, which is fine
-                pass
-
         logger.info("Starting vLLM Inference Server")
         logger.info("Host: %s, Port: %d", settings.host, settings.port)
         logger.info("Chat Model: %s", settings.chat_model)

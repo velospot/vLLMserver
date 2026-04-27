@@ -68,6 +68,15 @@ case "$MODE" in
         set -a
         source .env.prod
         set +a
+
+        # Set critical CUDA environment variables for vLLM
+        # These help vLLM handle multiprocessing correctly
+        export CUDA_DEVICE_ORDER=PCI_BUS_ID
+        export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+
+        # Log CUDA configuration
+        echo "CUDA Device(s): $CUDA_VISIBLE_DEVICES"
+
         .venv/bin/python main.py
         ;;
 

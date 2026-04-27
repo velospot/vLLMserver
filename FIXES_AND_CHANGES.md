@@ -11,19 +11,44 @@ To use CUDA with multiprocessing, you must use the 'spawn' start method
 ```
 
 **Root Cause:**
-vLLM initializes CUDA in the parent process. When uvicorn forks worker processes, they inherit CUDA state but cannot reinitialize it, causing a crash.
+vLLM v1's EngineCore spawns a subprocess for GPU operations. When forked instead of spawned, it inherits broken CUDA state and cannot reinitialize.
 
 **Fix Applied:**
-1. Set multiprocessing start method to 'spawn' in `main.py` (prevents forking)
-2. Ensured single worker configuration with `workers=1`
-3. Added enhanced error messages in `app/main.py` lifespan
-4. Added CUDA device logging for debugging
+
+1. **Early Spawn Setting** (main.py - CRITICAL)
+   - Set `multiprocessing.set_start_method('spawn')` BEFORE any imports
+   - Must happen at module load time, not in function
+   - Prevents uvicorn and vLLM from forking
+
+2. **Dedicated Initialization Module** (app/llm_init.py - NEW)
+   - `ensure_spawn_method()` — Verifies spawn is set
+   - `initialize_vllm_engine()` — Proper vLLM initialization
+   - Centralized error handling with debugging guidance
+
+3. **Service Updates**
+   - `app/services/llm.py` — Uses `initialize_vllm_engine()` wrapper
+   - `app/services/embedding.py` — Same pattern for embeddings
+
+4. **Environment & Script Updates**
+   - `scripts/start.sh` — Sets CUDA environment variables (CUDA_DEVICE_ORDER, CUDA_VISIBLE_DEVICES)
+   - `.env.prod` — Added comments for CUDA configuration
+
+5. **Testing & Documentation**
+   - `scripts/test_cuda.sh` — NEW: Comprehensive 6-step CUDA verification
+   - `CUDA_FORK_FIX.md` — NEW: Detailed explanation and troubleshooting
+   - `CUDA_PRODUCTION_SETUP.md` — Existing: Production deployment guide
 
 **Files Modified:**
-- `main.py` — Added multiprocessing.set_start_method('spawn') and environment checks
-- `app/main.py` — Enhanced error messages with CUDA diagnostics
+- `main.py` — Spawn method set at module import time (CRITICAL)
+- `app/llm_init.py` — NEW: Dedicated CUDA initialization module
+- `app/main.py` — Enhanced error messages
+- `app/services/llm.py` — Uses wrapper function
+- `app/services/embedding.py` — Updated to use wrapper
+- `scripts/start.sh` — CUDA environment variables
+- `.env.prod` — CUDA configuration comments
+- `scripts/test_cuda.sh` — NEW: CUDA verification script
 
-**Status:** ✅ Fixed with comprehensive production guide
+**Status:** ✅ Fixed with comprehensive testing and documentation
 
 ---
 

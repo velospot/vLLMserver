@@ -6,7 +6,8 @@ from typing import AsyncIterator, List, Optional
 
 from transformers import AutoTokenizer
 
-from app.vllm_imports import AsyncEngineArgs, AsyncLLMEngine, SamplingParams
+from app.llm_init import initialize_vllm_engine
+from app.vllm_imports import SamplingParams
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,8 @@ class LLMService:
         quantization: Optional[str] = None,
         dtype: str = "auto",
     ) -> None:
-        engine_args = AsyncEngineArgs(
+        # Initialize engine with proper CUDA/multiprocessing handling
+        self.engine = initialize_vllm_engine(
             model=model,
             gpu_memory_utilization=gpu_memory_utilization,
             max_model_len=max_model_len,
@@ -30,20 +32,7 @@ class LLMService:
             tensor_parallel_size=tensor_parallel_size,
             quantization=quantization,
             dtype=dtype,
-            trust_remote_code=True,
-            enable_log_requests=False,
         )
-        # Note: from_engine_args is async in real vLLM, but we call it synchronously
-        # The real vLLM version will need async initialization at server start
-        from_engine_args = AsyncLLMEngine.from_engine_args(engine_args)
-        # If it's a coroutine (real vLLM), it should be handled by caller
-        # If it's an object (mock vLLM), use it directly
-        if hasattr(from_engine_args, '__await__'):
-            raise RuntimeError(
-                "vLLM's AsyncLLMEngine.from_engine_args() is async. "
-                "Use app.main.lifespan() context manager to initialize models."
-            )
-        self.engine = from_engine_args
         self.model_name = model
 
         # Try to load tokenizer; fall back to mock if model doesn't exist
